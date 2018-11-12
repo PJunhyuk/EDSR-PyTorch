@@ -50,13 +50,15 @@ test# wget https://jgravity2.cafe24.com/dataset/2.jpg
 # python main.py --data_test Demo --scale 4 --pre_train download --test_only --save_results --cpu
 ```
 
-####
+#### Standard benchmarks
 
 ```
 /dataset# wget https://cv.snu.ac.kr/research/EDSR/benchmark.tar
 /dataset# wget https://cv.snu.ac.kr/research/EDSR/DIV2K.tar
+/dataset# tar xvf DIV2K.tar
+/dataset# tar xvf benchmark.tar
 
-# python main.py --data_test Set5+Set14+B100+Urban100+DIV2K --data_range 801-900 --scale 4 --n_resblocks 32 --n_feats 256 --res_scale 0.1 --pre_train download --test_only --self_ensemble
+# python main.py --data_test Set5+Set14+B100+Urban100+DIV2K --data_range 801-900 --scale 4 --n_resblocks 32 --n_feats 256 --res_scale 0.1 --pre_train download --test_only --self_ensemble --cpu
 ```
 
 #### Results
