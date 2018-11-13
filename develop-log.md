@@ -58,7 +58,7 @@ test# wget https://jgravity2.cafe24.com/dataset/2.jpg
 /dataset# tar xvf DIV2K.tar
 /dataset# tar xvf benchmark.tar
 
-# python main.py --data_test Set5+Set14+B100+Urban100+DIV2K --data_range 801-900 --scale 4 --n_resblocks 32 --n_feats 256 --res_scale 0.1 --pre_train download --test_only --self_ensemble --cpu
+# python main.py --data_test DIV2K --data_range 801-805 --scale 4 --n_resblocks 32 --n_feats 256 --res_scale 0.1 --pre_train download --test_only --self_ensemble
 ```
 
 #### Results
@@ -70,3 +70,7 @@ test# wget https://jgravity2.cafe24.com/dataset/2.jpg
 - 2.jpg -> 2_x4_SR.png : 786.65s
 - 1_small.jpg (360x360, 26.7KB) -> 1_small_x4_SR.png (1440x1440, 1.29MB) : 25.75s
 - 2_small.jpg (360x360, 53.5KB) -> 2_small_x4_SR.png (1440x1440, 2.40MB) : 29.96s
+
+###### Standard benchmarks
+
+- DIV2K x4 801-805 : 452.09s / PSNR: 32.746 @epoch 1
