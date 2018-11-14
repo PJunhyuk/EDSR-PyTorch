@@ -74,3 +74,11 @@ test# wget https://jgravity2.cafe24.com/dataset/2.jpg
 ###### Standard benchmarks
 
 - DIV2K x4 801-805 : 452.09s / PSNR: 32.746 @epoch 1
+
+
+## Windows
+
+```
+# python main.py --data_test Demo --scale 4 --pre_train download --test_only --save_results
+# python main.py --data_test DIV2K --data_range 1-2 --scale 4 --pre_train download --test_only --save_results
+```

@@ -41,6 +41,14 @@ class timer():
     def reset(self):
         self.acc = 0
 
+#redefine bg_target
+def bg_target(queue):
+    while True:
+        if not queue.empty():
+            filename, tensor = queue.get()
+            if filename is None: break
+            imageio.imwrite(filename, tensor.numpy())
+
 class checkpoint():
     def __init__(self, args):
         self.args = args
@@ -122,8 +130,7 @@ class checkpoint():
             plt.grid(True)
             plt.savefig(self.get_path('test_{}.pdf'.format(d)))
             plt.close(fig)
-
-    def begin_background(self):
+    '''    def begin_background(self):
         self.queue = Queue()
 
         def bg_target(queue):
@@ -132,12 +139,22 @@ class checkpoint():
                     filename, tensor = queue.get()
                     if filename is None: break
                     imageio.imwrite(filename, tensor.numpy())
-        
+
         self.process = [
             Process(target=bg_target, args=(self.queue,)) \
             for _ in range(self.n_processes)
         ]
-        
+
+        for p in self.process: p.start()'''
+
+    def begin_background(self):
+        self.queue = Queue()
+
+        self.process = [
+            Process(target=bg_target, args=(self.queue,)) \
+            for _ in range(self.n_processes)
+        ]
+
         for p in self.process: p.start()
 
     def end_background(self):
@@ -180,12 +197,20 @@ def calc_psnr(sr, hr, scale, rgb_range, dataset=None):
 
     return -10 * math.log10(mse)
 
+# redefine lambda x: x.requires_grad
+def return_x(x):
+    return x.requires_grad
+
+#redefine lambda x: int(x)
+def return_y(y):
+    return int(y)
+
 def make_optimizer(args, target):
     '''
         make optimizer and scheduler together
     '''
     # optimizer
-    trainable = filter(lambda x: x.requires_grad, target.parameters())
+    trainable = filter(return_x, target.parameters())
     kwargs_optimizer = {'lr': args.lr, 'weight_decay': args.weight_decay}
 
     if args.optimizer == 'SGD':
@@ -200,7 +225,7 @@ def make_optimizer(args, target):
         kwargs_optimizer['eps'] = args.epsilon
 
     # scheduler
-    milestones = list(map(lambda x: int(x), args.decay.split('-')))
+    milestones = list(map(return_y, args.decay.split('-')))
     kwargs_scheduler = {'milestones': milestones, 'gamma': args.gamma}
     scheduler_class = lrs.MultiStepLR
 
@@ -230,8 +255,7 @@ def make_optimizer(args, target):
 
         def get_last_epoch(self):
             return self.scheduler.last_epoch
-    
+
     optimizer = CustomOptimizer(trainable, **kwargs_optimizer)
     optimizer._register_scheduler(scheduler_class, **kwargs_scheduler)
     return optimizer
-
